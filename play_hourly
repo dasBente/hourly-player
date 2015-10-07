@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Global variables
+SHELL=/bin/bash
+XDG_RUNTIME_DIR=/run/user/1000 # TODO: Should probably be solved otherwise
+
+# Plays the current hourly
+play_hourly() {
+    # Get current hourly and current hour of the day
+    local cur_hourly=`cat "$HOME/CURRENT_HOURLY"`
+    local cur_hour=`date +%H`
+
+    aplay "$HOME/.hourlyplayer/$cur_hourly/$cur_hr.wav"
+}
+
+# Main function
+main() {
+    # Check, whether the .hourlyplayer directory exists
+    if [ ! -d "$HOME/.hourlyplayer"]; then
+	mkdir "$HOME/.hourlyplayer"
+    fi
+    
+    # Path to MUTE file in .hourlyplayer directory
+    local mute="$HOME/.hourlyplayer/MUTE"
+    
+    # Check whether MUTE already exists, otherwise set it to 0
+    if [ ! -e "$mute" ]; then
+	echo 0 > "$HOME/MUTE"
+    fi
+
+    # If MUTE is 0 update hourlies and play current one
+    if [ `cat "$mute"` -eq 0 ]; then
+	update_hourly()
+	play_hourly()
+    fi
+}
+
+main "$@"
