@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Global variables
-SHELL=/bin/bash
-XDG_RUNTIME_DIR=/run/user/1000 # TODO: Should probably be solved otherwise
-
 # Plays the current hourly
 play_curr_hourly() {
     # Get current hourly and current hour of the day

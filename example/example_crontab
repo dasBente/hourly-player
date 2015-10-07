@@ -1,4 +1,7 @@
 WORK_DIR=/home/USER_NAME/path/to/hourly-player
 
+# Important for playing sound files using aplay
+XDG_RUNTIME_DIR=YOUR_XDG_RUNTIME_DIR
+
 0 *  * * *  $WORK_DIR/play_hourly &> $HOME/.hourlyplayer/hourlyplayer.errorlog
 
