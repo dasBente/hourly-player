@@ -1,34 +1,34 @@
 #!/bin/bash
 
+# Path to the users .hourlyplayer directory
+readonly WORK_PATH="$HOME/.hourlyplayer"
+
 # Plays the current hourly
 play_curr_hourly() {
     # Get current hourly and current hour of the day
     local cur_hourly=`cat "$HOME/.hourlyplayer/CURRENT_HOURLY"`
     local cur_hour=`date +%H`
 
-    aplay "$HOME/.hourlyplayer/$cur_hourly/$cur_hour.wav"
+    aplay "$WORK_PATH/$cur_hourly/$cur_hour.wav"
 }
 
 update_hourly() {
-    # Path to .hourlyplayer directory
-    local work_path="$HOME/.hourlyplayer"
-
     # Get data necessary to deduce whether hourlies are up to date
     local today=`date +%m%d`
     local last_update=""
     
-    if [ -e "$work_path/LAST_UPDATE" ]; then
-	last_update=`cat "$work_path/LAST_UPDATE"`
+    if [ -e "$WORK_PATH/LAST_UPDATE" ]; then
+		last_update=`cat "$WORK_PATH/LAST_UPDATE"`
     fi
 
     # Update todays hourly if not up to date, otherwise we're done
     if [ "$today" != "$last_update" ]; then
-	# Update LAST_UPDATE
-	echo $today > "$work_path/LAST_UPDATE"
+		# Update LAST_UPDATE
+		echo $today > "$WORK_PATH/LAST_UPDATE"
 
-	# Pick a new hourly # TODO: Probably rework this (maybe with cut)
-	# First, read config file in .hourlyplayer
-	local config="$work_path/config"
+		# Pick a new hourly # TODO: Probably rework this (maybe with cut)
+		# First, read config file in .hourlyplayer
+		local config="$WORK_PATH/config"
 
 	# Check which list of hourlies should be used
 	local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
@@ -36,24 +36,24 @@ update_hourly() {
 	# If list is empty choose random hourly from .hourlyplayer
 	if [ "$list" == "" ]; then
             local default=`cat "$config" | grep default | sed s/default=//`
-	    echo "$default" > "$work_path/CURRENT_HOURLY"
-	else 
-	    # Get a list of all hourlies to choose between
-	    local hourlies=""
+	    	echo "$default" > "$WORK_PATH/CURRENT_HOURLY"
+		else 
+	    	# Get a list of all hourlies to choose between
+	    	local hourlies=""
 
-	    # If no list is chosen, use all available directories
-	    if [ "$list" == "" ]; then
-		hourlies=`ls -d "$work_path"/*/ | sed s_"$work_path/"__ | sed s_/__`
-	    else
-	        hourlies=`cat "$work_path/$list"`
-	    fi
-	    
-	    # Number of hourlies in the list
-	    local num_hourlies=`echo $hourlies | wc -w`
+	    	# If no list is chosen, use all available directories
+	    	if [ "$list" == "all" ]; then
+				hourlies=`ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__`
+	    	else
+	        	hourlies=`cat "$WORK_PATH/$list"`
+	    	fi
+	   		 
+	    	# Number of hourlies in the list
+	    	local num_hourlies=`echo $hourlies | wc -w`
 
-	    # Choose a hourly at random
-	    local rand=`echo $((RANDOM % $num_hourlies + 1))`
-	    echo $hourlies | cut -d " " -f $rand > "$work_path/CURRENT_HOURLY"
+	    	# Choose a hourly at random
+	    	local rand=`echo $((RANDOM % $num_hourlies + 1))`
+	    	echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
     	fi
     fi
 }
@@ -61,12 +61,12 @@ update_hourly() {
 # Main function
 main() {
     # Check, whether the .hourlyplayer directory exists
-    if [ ! -d "$HOME/.hourlyplayer" ]; then
-	mkdir "$HOME/.hourlyplayer"
+    if [ ! -d "$WORK_DIR" ]; then
+		mkdir "$WORK_DIR"
     fi
     
     # Path to MUTE file in .hourlyplayer directory
-    local mute="$HOME/.hourlyplayer/MUTE"
+    local mute="$WORK_DIR/MUTE"
     
     # Check whether MUTE already exists, otherwise set it to 0
     if [ ! -e "$mute" ]; then
