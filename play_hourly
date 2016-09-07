@@ -30,11 +30,11 @@ update_hourly() {
 		# First, read config file in .hourlyplayer
 		local config="$WORK_PATH/config"
 
-	# Check which list of hourlies should be used
-	local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
+		# Check which list of hourlies should be used
+		local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
 
-	# If list is empty choose random hourly from .hourlyplayer
-	if [ "$list" == "" ]; then
+		# If list is empty choose random hourly from .hourlyplayer
+		if [ "$list" == "" ]; then
             local default=`cat "$config" | grep default | sed s/default=//`
 	    	echo "$default" > "$WORK_PATH/CURRENT_HOURLY"
 		else 
@@ -70,13 +70,13 @@ main() {
     
     # Check whether MUTE already exists, otherwise set it to 0
     if [ ! -e "$mute" ]; then
-	echo 0 > "$mute"
+		echo 0 > "$mute"
     fi
 
     # If MUTE is 0 update hourlies and play current one
     if [ `cat "$mute"` -eq 0 ]; then
-	update_hourly
-	play_curr_hourly
+		update_hourly
+		play_curr_hourly
     fi
 }
 
