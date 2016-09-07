@@ -107,9 +107,8 @@ usage() {
 # Main function
 main() {
 	
-	while getopts "nhcalLdD:" opt; do
+	while getopts "hcalLdD:" opt; do
 		case "$opt" in
-			n) ;;
 			h) usage ;;
 			c) current_hourly ;;
 			a) list_all_hourlies ;;
@@ -121,12 +120,12 @@ main() {
 	done
 
     # Check, whether the .hourlyplayer directory exists
-    if [ ! -d "$WORK_DIR" ]; then
-		mkdir "$WORK_DIR"
+    if [ ! -d "$HOME/.hourlyplayer" ]; then
+		mkdir "$HOME/.hourlyplayer"
     fi
     
     # Path to MUTE file in .hourlyplayer directory
-    local mute="$WORK_DIR/MUTE"
+    local mute="$HOME/.hourlyplayer/MUTE"
     
     # Check whether MUTE already exists, otherwise set it to 0
     if [ ! -e "$mute" ]; then
