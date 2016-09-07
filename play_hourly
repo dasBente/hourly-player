@@ -58,8 +58,68 @@ update_hourly() {
     fi
 }
 
+# Display current hourly
+current_hourly() {
+	echo `cat "$WORK_PATH/CURRENT_HOURLY"`
+	exit 1
+}
+
+# Lists all available hourlies in the .hourlyplayer directory
+list_all_hourlies() {
+	local hourlies=`ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__ | column`
+	echo "$hourlies"
+	exit 1
+}
+
+# Lists all available hourly lists
+all_lists() {
+	local lists=`ls -p "$WORK_PATH" | \
+		grep -v -e / -e CURRENT -e LAST_UPDATE -e MUTE -e config -e .errorlog | column`
+	echo "$lists"
+	exit 1
+}
+
+current_default() {
+	local cont=`cat "$WORK_PATH/config"`
+	local default=`echo "$cont" | grep default | cut -d'=' -f2`
+	echo "$default"
+	exit 1
+}
+
+set_default() {
+	echo "TODO"
+
+	exit 1
+}
+
+# Print the currently selected list
+current_list() {
+	cat "$WORK_PATH/config" | grep "hourly_list=" | sed s/hourly_list=// | echo
+	exit 1
+}
+
+# Print usage help
+usage() {
+	echo "TODO | Usage: $0 [-a|-c|-l]" 1>&2
+	exit 1
+}
+
 # Main function
 main() {
+	
+	while getopts "nhcalLdD:" opt; do
+		case "$opt" in
+			n) ;;
+			h) usage ;;
+			c) current_hourly ;;
+			a) list_all_hourlies ;;
+			l) all_lists ;;
+			L) current_list ;;
+			d) current_default ;;
+			D) set_default "$OPTARG" ;;
+		esac
+	done
+
     # Check, whether the .hourlyplayer directory exists
     if [ ! -d "$WORK_DIR" ]; then
 		mkdir "$WORK_DIR"
