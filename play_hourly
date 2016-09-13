@@ -12,6 +12,11 @@ play_curr_hourly() {
     aplay "$WORK_PATH/$cur_hourly/$cur_hour.wav"
 }
 
+# Returns a (sorted) list of all hourlies
+list_hourlies() {
+	ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__
+}
+
 update_hourly() {
     # Get data necessary to deduce whether hourlies are up to date
     local today=`date +%m%d`
@@ -43,8 +48,8 @@ update_hourly() {
 
 	    	# If no list is chosen, use all available directories
 	    	if [ "$list" == "all" ]; then
-				hourlies=`ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__`
-	    	else
+				hourlies=`list_hourlies`
+			else
 	        	hourlies=`cat "$WORK_PATH/$list"`
 	    	fi
 	   		 
@@ -64,9 +69,9 @@ current_hourly() {
 	exit 1
 }
 
-# Lists all available hourlies in the .hourlyplayer directory
-list_all_hourlies() {
-	local hourlies=`ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__ | column`
+# Pretty prints list of all available hourlies in the .hourlyplayer directory
+pp_all_hourlies() {
+	local hourlies=`list_hourlies | column`
 	echo "$hourlies"
 	exit 1
 }
@@ -111,7 +116,7 @@ main() {
 		case "$opt" in
 			h) usage ;;
 			c) current_hourly ;;
-			a) list_all_hourlies ;;
+			a) pp_all_hourlies ;;
 			l) all_lists ;;
 			L) current_list ;;
 			d) current_default ;;
