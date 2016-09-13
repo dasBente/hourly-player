@@ -101,6 +101,16 @@ current_list() {
 	exit 1
 }
 
+# Print all hourlies that can currently be selected by the player
+all_in_list() {
+	list=`cat "$WORK_PATH/config" | grep hourly_list | \
+		sed s/hourly_list=//`
+
+	hourlies=`hourlies_in_list "$list" | column`
+	echo "$hourlies"
+	exit 1
+}
+
 # Print usage help
 usage() {
 	echo "TODO | Usage: $0 [-a|-c|-l]" 1>&2
@@ -110,11 +120,12 @@ usage() {
 # Main function
 main() {
 	
-	while getopts "hcalLdD:" opt; do
+	while getopts "hcaAlLdD:" opt; do
 		case "$opt" in
 			h) usage ;;
 			c) current_hourly ;;
 			a) pp_all_hourlies ;;
+			A) all_in_list ;;
 			l) all_lists ;;
 			L) current_list ;;
 			d) current_default ;;
