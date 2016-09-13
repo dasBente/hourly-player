@@ -50,7 +50,12 @@ update_hourly() {
 	    	if [ "$list" == "all" ]; then
 				hourlies=`list_hourlies`
 			else
-	        	hourlies=`cat "$WORK_PATH/$list"`
+				if [ "$list" ~= ^- ]; then
+					list="${list:1}"
+					hourlies=`echo "$(list_hourlies)" | sort - "$WORK_PATH/$list" | uniq -u`
+				else
+	        		hourlies=`cat "$WORK_PATH/$list"`
+				fi
 	    	fi
 	   		 
 	    	# Number of hourlies in the list
