@@ -17,6 +17,19 @@ list_hourlies() {
 	ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__
 }
 
+hourlies_in_list() {
+	if [ "$1" == "" ]; then
+		cat "$WORK_PATH/config" | grep default | sed s/default=//
+	elif [ "$1" == "all" ]; then
+		list_hourlies
+	elif [[ "$1" =~ ^- ]]; then
+		list="${1:1}"
+		echo "$(list_hourlies)" | sort - "$WORK_PATH/$list" | uniq -u
+	else
+		cat "$WORK_PATH/$1"
+	fi
+}
+
 update_hourly() {
     # Get data necessary to deduce whether hourlies are up to date
     local today=`date +%m%d`
@@ -38,33 +51,14 @@ update_hourly() {
 		# Check which list of hourlies should be used
 		local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
 
-		# If list is empty choose random hourly from .hourlyplayer
-		if [ "$list" == "" ]; then
-            local default=`cat "$config" | grep default | sed s/default=//`
-	    	echo "$default" > "$WORK_PATH/CURRENT_HOURLY"
-		else 
-	    	# Get a list of all hourlies to choose between
-	    	local hourlies=""
-
-	    	# If no list is chosen, use all available directories
-	    	if [ "$list" == "all" ]; then
-				hourlies=`list_hourlies`
-			else
-				if [ "$list" ~= ^- ]; then
-					list="${list:1}"
-					hourlies=`echo "$(list_hourlies)" | sort - "$WORK_PATH/$list" | uniq -u`
-				else
-	        		hourlies=`cat "$WORK_PATH/$list"`
-				fi
-	    	fi
+		hourlies=`hourlies_in_list list`
 	   		 
-	    	# Number of hourlies in the list
-	    	local num_hourlies=`echo $hourlies | wc -w`
+	    # Number of hourlies in the list
+	    local num_hourlies=`echo "$hourlies" | wc -w`
 
-	    	# Choose a hourly at random
-	    	local rand=`echo $((RANDOM % $num_hourlies + 1))`
-	    	echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
-    	fi
+	    # Choose a hourly at random
+	    local rand=`echo $((RANDOM % $num_hourlies + 1))`
+	    echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
     fi
 }
 
@@ -98,7 +92,6 @@ current_default() {
 
 set_default() {
 	echo "TODO"
-
 	exit 1
 }
 
