@@ -31,8 +31,27 @@ hourlies_in_list() {
 	fi
 }
 
+# Generate a new hourly from the list defined in config
+new_hourly() {
+	# Pick a new hourly # TODO: Probably rework this (maybe with cut)
+	# First, read config file in .hourlyplayer
+	local config="$WORK_PATH/config"
+
+	# Check which list of hourlies should be used
+	local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
+
+	hourlies=`hourlies_in_list "$list"`
+	   		 
+	# Number of hourlies in the list
+	local num_hourlies=`echo "$hourlies" | wc -w`
+
+	# Choose a hourly at random
+	local rand=`echo $((RANDOM % $num_hourlies + 1))`
+	echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
+}
+
 update_hourly() {
-    # Get data necessary to deduce whether hourlies are up to date
+	# Get data necessary to deduce whether hourlies are up to date
     local today=`date +%m%d`
     local last_update=""
     
@@ -42,25 +61,11 @@ update_hourly() {
 
     # Update todays hourly if not up to date, otherwise we're done
     if [ "$today" != "$last_update" ]; then
-		# Update LAST_UPDATE
-		echo $today > "$WORK_PATH/LAST_UPDATE"
+		new_hourly
+	fi
 
-		# Pick a new hourly # TODO: Probably rework this (maybe with cut)
-		# First, read config file in .hourlyplayer
-		local config="$WORK_PATH/config"
-
-		# Check which list of hourlies should be used
-		local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
-
-		hourlies=`hourlies_in_list "$list"`
-	   		 
-	    # Number of hourlies in the list
-	    local num_hourlies=`echo "$hourlies" | wc -w`
-
-	    # Choose a hourly at random
-	    local rand=`echo $((RANDOM % $num_hourlies + 1))`
-	    echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
-    fi
+	# Update LAST_UPDATE
+	echo $today > "$WORK_PATH/LAST_UPDATE"
 }
 
 # Display current hourly
