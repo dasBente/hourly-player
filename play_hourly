@@ -31,6 +31,18 @@ hourlies_in_list() {
 	fi
 }
 
+# Sets hourly to the given argument (if it is a valid hourly)
+set_hourly() {
+	if [[ "$(list_hourlies)" =~ (^|[[:space:]])"$1"($|[[:space:]])  ]]; then
+		echo "$(date +%m%d)" > "$WORK_PATH/LAST_UPDATE"
+		echo "$1" > "$WORK_PATH/CURRENT_HOURLY"
+		exit 0
+	else
+		echo "The given hourly is not unknown."
+		exit 1
+	fi
+}
+
 # Generate a new hourly from the list defined in config
 new_hourly() {
 	# Pick a new hourly # TODO: Probably rework this (maybe with cut)
@@ -126,7 +138,7 @@ usage() {
 # Main function
 main() {
 	
-	while getopts "hcaAlLdD:" opt; do
+	while getopts "hcaAlLdD:nN:" opt; do
 		case "$opt" in
 			h) usage ;;
 			c) current_hourly ;;
@@ -136,6 +148,8 @@ main() {
 			L) current_list ;;
 			d) current_default ;;
 			D) set_default "$OPTARG" ;;
+			n) new_hourly ;;
+			N) set_hourly "$OPTARG" ;;
 		esac
 	done
 
