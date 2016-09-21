@@ -17,6 +17,7 @@ list_hourlies() {
 	ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__
 }
 
+# Returns a sorted list of available hourlies
 hourlies_in_list() {
 	if [ "$1" == "" ]; then
 		cat "$WORK_PATH/config" | grep default | sed s/default=//
