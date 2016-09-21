@@ -52,7 +52,7 @@ update_hourly() {
 		# Check which list of hourlies should be used
 		local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
 
-		hourlies=`hourlies_in_list list`
+		hourlies=`hourlies_in_list "$list"`
 	   		 
 	    # Number of hourlies in the list
 	    local num_hourlies=`echo "$hourlies" | wc -w`
@@ -98,7 +98,7 @@ set_default() {
 
 # Print the currently selected list
 current_list() {
-	cat "$WORK_PATH/config" | grep "hourly_list=" | sed s/hourly_list=// | echo
+	cat "$WORK_PATH/config" | grep hourly_list | sed s/hourly_list=// 
 	exit 1
 }
 
