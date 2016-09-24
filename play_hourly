@@ -131,21 +131,21 @@ all_in_list() {
 
 # Print usage help
 usage() {
-	echo "TODO | Usage: $0 [-a|-c|-l]" 1>&2
+	echo "Usage: $0 [-h|-a|-A|-c|-C|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
 	exit 1
 }
 
 # Main function
 main() {
 	
-	while getopts "hcaAlLdD:nN:" opt; do
+	while getopts "hcCaAldD:nN:" opt; do
 		case "$opt" in
 			h) usage ;;
 			c) current_hourly ;;
 			a) pp_all_hourlies ;;
 			A) all_in_list ;;
 			l) all_lists ;;
-			L) current_list ;;
+			C) current_list ;;
 			d) current_default ;;
 			D) set_default "$OPTARG" ;;
 			n) new_hourly ;;
