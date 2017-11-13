@@ -78,7 +78,7 @@
 (defun run ()
   (within-main-loop
    (let* ((icon (make-instance 'gtk-status-icon
-			      :pixbuf (gdk-pixbuf-new-from-file "/home/dasbente/Bilder/128.png")
+			      :pixbuf (gdk-pixbuf-new-from-file "./placeholder.png")
 			      :tooltip-text "Configure hourly player"))
 	  (menu (build-menu)))
 
