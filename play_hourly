@@ -142,15 +142,10 @@ main() {
     # Path to MUTE file in .hourlyplayer directory
     local mute="$HOME/.hourlyplayer/MUTE"
     
-    # Check whether MUTE already exists, otherwise set it to 0
+    # Check whether MUTE exists and update and play hourlies otherwise
     if [ ! -e "$mute" ]; then
-		echo 0 > "$mute"
-    fi
-
-    # If MUTE is 0 update hourlies and play current one
-    if [ `cat "$mute"` -eq 0 ]; then
-		update_hourly
-		play_curr_hourly
+	update_hourly
+	play_curr_hourly
     fi
 }
 
