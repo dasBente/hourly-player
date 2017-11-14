@@ -121,8 +121,10 @@ current_list() {
 	exit 1
 }
 
-
-
+# Set the current list
+set_list() {
+    cat "$WORK_PATH/config" | sed s/hourly_list=.*/hourly_list="$1"/ > "$WORK_PATH/config"
+}
 
 # Print all hourlies that can currently be selected by the player
 all_in_list() {
@@ -143,7 +145,7 @@ usage() {
 # Main function
 main() {
 	
-	while getopts "hcCaAldD:nN:" opt; do
+	while getopts "hcCL:aAldD:nN:" opt; do
 		case "$opt" in
 			h) usage ;;
 			c) current_hourly ;;
@@ -151,6 +153,7 @@ main() {
 			A) all_in_list ;;
 			l) all_lists ;;
 			C) current_list ;;
+			L) set_list "$OPTARG" ;;
 			d) current_default ;;
 			D) set_default "$OPTARG" ;;
 			n) new_hourly ;;
