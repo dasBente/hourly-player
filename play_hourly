@@ -14,111 +14,111 @@ play_curr_hourly() {
 
 # Returns a (sorted) list of all hourlies
 list_hourlies() {
-	ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__
+    ls -d "$WORK_PATH"/*/ | sed s_"$WORK_PATH/"__ | sed s_/__
 }
 
 # Returns a sorted list of available hourlies
 hourlies_in_list() {
-	if [ "$1" == "" ]; then
-		cat "$WORK_PATH/config" | grep default | sed s/default=//
-	elif [ "$1" == "all" ]; then
-		list_hourlies
-	elif [[ "$1" =~ ^- ]]; then
-		list="${1:1}"
-		echo "$(list_hourlies)" | sort - "$WORK_PATH/$list" | uniq -u
-	else
-		cat "$WORK_PATH/$1"
-	fi
+    if [ "$1" == "" ]; then
+	cat "$WORK_PATH/config" | grep default | sed s/default=//
+    elif [ "$1" == "all" ]; then
+	list_hourlies
+    elif [[ "$1" =~ ^- ]]; then
+	list="${1:1}"
+	echo "$(list_hourlies)" | sort - "$WORK_PATH/$list" | uniq -u
+    else
+	cat "$WORK_PATH/$1"
+    fi
 }
 
 # Sets hourly to the given argument (if it is a valid hourly)
 set_hourly() {
-	if [[ "$(list_hourlies)" =~ (^|[[:space:]])"$1"($|[[:space:]])  ]]; then
-		echo "$(date +%m%d)" > "$WORK_PATH/LAST_UPDATE"
-		echo "$1" > "$WORK_PATH/CURRENT_HOURLY"
-		exit 0
-	else
-		echo "The given hourly is not unknown."
-		exit 1
-	fi
+    if [[ "$(list_hourlies)" =~ (^|[[:space:]])"$1"($|[[:space:]])  ]]; then
+	echo "$(date +%m%d)" > "$WORK_PATH/LAST_UPDATE"
+	echo "$1" > "$WORK_PATH/CURRENT_HOURLY"
+	exit 0
+    else
+	echo "The given hourly is not unknown."
+	exit 1
+    fi
 }
 
 # Generate a new hourly from the list defined in config
 new_hourly() {
-	# Pick a new hourly # TODO: Probably rework this (maybe with cut)
-	# First, read config file in .hourlyplayer
-	local config="$WORK_PATH/config"
+    # Pick a new hourly # TODO: Probably rework this (maybe with cut)
+    # First, read config file in .hourlyplayer
+    local config="$WORK_PATH/config"
 
-	# Check which list of hourlies should be used
-	local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
+    # Check which list of hourlies should be used
+    local list=`cat "$config" | grep hourly_list | sed s/hourly_list=//`
 
-	hourlies=`hourlies_in_list "$list"`
-	   		 
-	# Number of hourlies in the list
-	local num_hourlies=`echo "$hourlies" | wc -w`
+    hourlies=`hourlies_in_list "$list"`
+    
+    # Number of hourlies in the list
+    local num_hourlies=`echo "$hourlies" | wc -w`
 
-	# Choose a hourly at random
-	local rand=`echo $((RANDOM % $num_hourlies + 1))`
-	echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
+    # Choose a hourly at random
+    local rand=`echo $((RANDOM % $num_hourlies + 1))`
+    echo $hourlies | cut -d " " -f $rand > "$WORK_PATH/CURRENT_HOURLY"
 }
 
 update_hourly() {
-	# Get data necessary to deduce whether hourlies are up to date
+    # Get data necessary to deduce whether hourlies are up to date
     local today=`date +%m%d`
     local last_update=""
     
     if [ -e "$WORK_PATH/LAST_UPDATE" ]; then
-		last_update=`cat "$WORK_PATH/LAST_UPDATE"`
+	last_update=`cat "$WORK_PATH/LAST_UPDATE"`
     fi
 
     # Update todays hourly if not up to date, otherwise we're done
     if [ "$today" != "$last_update" ]; then
-		new_hourly
-	fi
+	new_hourly
+    fi
 
-	# Update LAST_UPDATE
-	echo $today > "$WORK_PATH/LAST_UPDATE"
+    # Update LAST_UPDATE
+    echo $today > "$WORK_PATH/LAST_UPDATE"
 }
 
 # Display current hourly
 current_hourly() {
-	echo `cat "$WORK_PATH/CURRENT_HOURLY"`
-	exit 1
+    echo `cat "$WORK_PATH/CURRENT_HOURLY"`
+    exit 1
 }
 
 # Pretty prints list of all available hourlies in the .hourlyplayer directory
 pp_all_hourlies() {
-	local hourlies=`list_hourlies | column`
-	echo "$hourlies"
-	exit 1
+    local hourlies=`list_hourlies | column`
+    echo "$hourlies"
+    exit 1
 }
 
 # Lists all available hourly lists
 all_lists() {
-	local lists=`ls -p "$WORK_PATH" | \
+    local lists=`ls -p "$WORK_PATH" | \
 		grep -v -e / -e CURRENT -e LAST_UPDATE -e MUTE -e config -e .errorlog | column`
-	echo "$lists"
-	exit 1
+    echo "$lists"
+    exit 1
 }
 
 # Display current default
 current_default() {
-	local cont=`cat "$WORK_PATH/config"`
-	local default=`echo "$cont" | grep default | cut -d'=' -f2`
-	echo "$default"
-	exit 1
+    local cont=`cat "$WORK_PATH/config"`
+    local default=`echo "$cont" | grep default | cut -d'=' -f2`
+    echo "$default"
+    exit 1
 }
 
 # Set the current default
 set_default() {
-	cat "$WORK_PATH/config" | sed s/default=.*/default="$1"/ > "$WORK_PATH/config"
-	exit 1
+    cat "$WORK_PATH/config" | sed s/default=.*/default="$1"/ > "$WORK_PATH/config"
+    exit 1
 }
 
 # Print the currently selected list
 current_list() {
-	cat "$WORK_PATH/config" | grep hourly_list | sed s/hourly_list=// 
-	exit 1
+    cat "$WORK_PATH/config" | grep hourly_list | sed s/hourly_list=// 
+    exit 1
 }
 
 # Set the current list
@@ -128,42 +128,42 @@ set_list() {
 
 # Print all hourlies that can currently be selected by the player
 all_in_list() {
-	list=`cat "$WORK_PATH/config" | grep hourly_list | \
+    list=`cat "$WORK_PATH/config" | grep hourly_list | \
 		sed s/hourly_list=//`
 
-	hourlies=`hourlies_in_list "$list" | column`
-	echo "$hourlies"
-	exit 1
+    hourlies=`hourlies_in_list "$list" | column`
+    echo "$hourlies"
+    exit 1
 }
 
 # Print usage help
 usage() {
-	echo "Usage: $0 [-h|-a|-A|-c|-C|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
-	exit 1
+    echo "Usage: $0 [-h|-a|-A|-c|-C|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
+    exit 1
 }
 
 # Main function
 main() {
-	
-	while getopts "hcCL:aAldD:nN:" opt; do
-		case "$opt" in
-			h) usage ;;
-			c) current_hourly ;;
-			a) pp_all_hourlies ;;
-			A) all_in_list ;;
-			l) all_lists ;;
-			C) current_list ;;
-			L) set_list "$OPTARG" ;;
-			d) current_default ;;
-			D) set_default "$OPTARG" ;;
-			n) new_hourly ;;
-			N) set_hourly "$OPTARG" ;;
-		esac
-	done
+    
+    while getopts "hcCL:aAldD:nN:" opt; do
+	case "$opt" in
+	    h) usage ;;
+	    c) current_hourly ;;
+	    a) pp_all_hourlies ;;
+	    A) all_in_list ;;
+	    l) all_lists ;;
+	    C) current_list ;;
+	    L) set_list "$OPTARG" ;;
+	    d) current_default ;;
+	    D) set_default "$OPTARG" ;;
+	    n) new_hourly ;;
+	    N) set_hourly "$OPTARG" ;;
+	esac
+    done
 
     # Check, whether the .hourlyplayer directory exists
     if [ ! -d "$HOME/.hourlyplayer" ]; then
-		mkdir "$HOME/.hourlyplayer"
+	mkdir "$HOME/.hourlyplayer"
     fi
     
     # Path to MUTE file in .hourlyplayer directory
@@ -171,13 +171,13 @@ main() {
     
     # Check whether MUTE already exists, otherwise set it to 0
     if [ ! -e "$mute" ]; then
-		echo 0 > "$mute"
+	echo 0 > "$mute"
     fi
 
     # If MUTE is 0 update hourlies and play current one
     if [ `cat "$mute"` -eq 0 ]; then
-		update_hourly
-		play_curr_hourly
+	update_hourly
+	play_curr_hourly
     fi
 }
 
