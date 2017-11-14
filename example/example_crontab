@@ -5,3 +5,4 @@ XDG_RUNTIME_DIR=YOUR_XDG_RUNTIME_DIR
 
 0 *  * * *  $WORK_DIR/play_hourly &> $HOME/.hourlyplayer/hourlyplayer.errorlog
 
+@reboot /home/PATH/TO/hourly-player/run # Start tray icon on launch

@@ -6,10 +6,9 @@
 
 
 (defparameter *current-hourly-path* "~/.hourlyplayer/CURRENT_HOURLY")
-
-
 (defparameter *mute-hourly-path* "~/.hourlyplayer/MUTE")
-
+(defparameter *path-to-play-hourly* "/home/dasbente/bin/play_hourly")
+(defparameter *path-to-icon* "/home/dasbente/.hourlyplayer/placeholder.png")
 
 (defun is-mute ()
   "Checks whether the player is currently muted"
@@ -63,7 +62,7 @@
 		      (lambda (widget)
 			(declare (ignore widget))
 			(format t "I work! ~%")
-			(asdf:run-shell-command "./play_hourly")))
+			(asdf:run-shell-command *path-to-play-hourly*)))
     
     ;; Attach items to menu
     (gtk-menu-shell-append menu current-hourly)
@@ -78,7 +77,8 @@
 (defun run ()
   (within-main-loop
    (let* ((icon (make-instance 'gtk-status-icon
-			      :pixbuf (gdk-pixbuf-new-from-file "./placeholder.png")
+			       :pixbuf (gdk-pixbuf-new-from-file
+					*path-to-icon*)
 			      :tooltip-text "Configure hourly player"))
 	  (menu (build-menu)))
 
@@ -88,4 +88,6 @@
 			 (declare (ignore widget button activate-time))
 			 (format t "Icon clicked!~%")
 			 (update-curr-hourly)
-			 (gtk-menu-popup menu))))))
+			 (gtk-menu-popup menu)))))
+  (loop (sleep 60)))
+
