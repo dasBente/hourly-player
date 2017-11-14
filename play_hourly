@@ -111,7 +111,7 @@ current_default() {
 
 # Set the current default
 set_default() {
-    cat "$WORK_PATH/config" | sed s/default=.*/default="$1"/ > "$WORK_PATH/config"
+    sed -i s/default=.*/default="$1"/ "$WORK_PATH/config"
     exit 1
 }
 
@@ -123,7 +123,8 @@ current_list() {
 
 # Set the current list
 set_list() {
-    cat "$WORK_PATH/config" | sed s/hourly_list=.*/hourly_list="$1"/ > "$WORK_PATH/config"
+    sed -i s/hourly_list=.*/hourly_list="$1"/ "$WORK_PATH/config"
+    exit 1
 }
 
 # Print all hourlies that can currently be selected by the player
