@@ -83,14 +83,14 @@ update_hourly() {
 # Display current hourly
 current_hourly() {
     echo `cat "$WORK_PATH/CURRENT_HOURLY"`
-    exit 1
+    exit 0
 }
 
 # Pretty prints list of all available hourlies in the .hourlyplayer directory
 pp_all_hourlies() {
     local hourlies=`list_hourlies | column`
     echo "$hourlies"
-    exit 1
+    exit 0
 }
 
 # Lists all available hourly lists
@@ -98,7 +98,7 @@ all_lists() {
     local lists=`ls -p "$WORK_PATH" | \
 		grep -v -e / -e CURRENT -e LAST_UPDATE -e MUTE -e config -e .errorlog | column`
     echo "$lists"
-    exit 1
+    exit 0
 }
 
 # Display current default
@@ -106,25 +106,25 @@ current_default() {
     local cont=`cat "$WORK_PATH/config"`
     local default=`echo "$cont" | grep default | cut -d'=' -f2`
     echo "$default"
-    exit 1
+    exit 0
 }
 
 # Set the current default
 set_default() {
     sed -i s/default=.*/default="$1"/ "$WORK_PATH/config"
-    exit 1
+    exit 0
 }
 
 # Print the currently selected list
 current_list() {
     cat "$WORK_PATH/config" | grep hourly_list | sed s/hourly_list=// 
-    exit 1
+    exit 0
 }
 
 # Set the current list
 set_list() {
     sed -i s/hourly_list=.*/hourly_list="$1"/ "$WORK_PATH/config"
-    exit 1
+    exit 0
 }
 
 # Print all hourlies that can currently be selected by the player
@@ -134,13 +134,14 @@ all_in_list() {
 
     hourlies=`hourlies_in_list "$list" | column`
     echo "$hourlies"
-    exit 1
+    exit 0
 }
+
 
 # Print usage help
 usage() {
-    echo "Usage: $0 [-h|-a|-A|-c|-C|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
-    exit 1
+    echo "Usage: $0 [-h|-a|-A|-c|-C|-L [NEW_LIST]|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
+    exit 0
 }
 
 # Main function
