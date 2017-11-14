@@ -101,6 +101,7 @@ all_lists() {
 	exit 1
 }
 
+# Display current default
 current_default() {
 	local cont=`cat "$WORK_PATH/config"`
 	local default=`echo "$cont" | grep default | cut -d'=' -f2`
@@ -108,8 +109,9 @@ current_default() {
 	exit 1
 }
 
+# Set the current default
 set_default() {
-	echo "TODO"
+	cat "$WORK_PATH/config" | sed s/default=.*/default="$1"/ > "$WORK_PATH/config"
 	exit 1
 }
 
@@ -118,6 +120,9 @@ current_list() {
 	cat "$WORK_PATH/config" | grep hourly_list | sed s/hourly_list=// 
 	exit 1
 }
+
+
+
 
 # Print all hourlies that can currently be selected by the player
 all_in_list() {
