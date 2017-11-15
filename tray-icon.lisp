@@ -74,6 +74,8 @@
   "Builds a pop-up menu for the icon. Currently rebuilds the menu every time!"
   (let ((menu (gtk-menu-new)) 
 	(current-hourly (gtk-menu-item-new))
+	;; next-hourly as sub menu?
+	(next-hourly (gtk-menu-item-new-with-label "New hourly"))
 	(mute (make-instance 'gtk-check-menu-item
 			     :label "Mute"
 			     :active (is-mute))))
@@ -93,9 +95,16 @@
 			(declare (ignore widget))
 			(format t "I work! ~%")
 		        (play-hourly)))
+
+    ;; Process pressing the next hourly button
+    (g-signal-connect next-hourly "activate"
+		      (lambda (widget)
+			(declare (ignore widget))
+			(random-hourly)))
     
     ;; Attach items to menu
     (gtk-menu-shell-append menu current-hourly)
+    (gtk-menu-shell-append menu next-hourly)
     (gtk-menu-shell-append menu mute)
 
     (gtk-widget-show-all menu)
