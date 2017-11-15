@@ -137,17 +137,30 @@ all_in_list() {
     exit 0
 }
 
+# Mute the hourly player
+mute() {
+    touch "$WORK_PATH/MUTE"
+    exit 0
+}
+
+# Unmute the hourly player
+unmute() {
+    if [[ -e "$WORK_PATH/MUTE" ]]; then
+	rm "$WORK_PATH/MUTE"
+    fi
+    exit 0
+}
 
 # Print usage help
 usage() {
-    echo "Usage: $0 [-h|-a|-A|-c|-C|-L [NEW_LIST]|-l|-d|-D [NEW_DEFAULT]|-n|-N [NEW_HOURLY]]" 1>&2
+    echo "Usage: $0 [-haAcCldnmM|-L [NEW_LIST]|-D [NEW_DEFAULT]|-N [NEW_HOURLY]]" 1>&2
     exit 0
 }
 
 # Main function
 main() {
     
-    while getopts "hcCL:aAldD:nN:" opt; do
+    while getopts "hcCL:aAldD:nN:mM" opt; do
 	case "$opt" in
 	    h) usage ;;
 	    c) current_hourly ;;
@@ -160,6 +173,8 @@ main() {
 	    D) set_default "$OPTARG" ;;
 	    n) new_hourly ;;
 	    N) set_hourly "$OPTARG" ;;
+	    m) mute ;;
+	    M) unmute ;;
 	esac
     done
 
