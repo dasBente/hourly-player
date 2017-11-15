@@ -35,8 +35,7 @@
     (g-signal-connect current-hourly "activate"
 		      (lambda (widget)
 			(declare (ignore widget))
-			(format t "I work! ~%")
-		        (play-hourly)))
+			(play-hourly)))
 
     ;; Process pressing the next hourly button
     (g-signal-connect next-hourly "activate"
@@ -67,7 +66,6 @@
      (g-signal-connect icon "popup-menu"
 		       (lambda (widget button activate-time)
 			 (declare (ignore widget button activate-time))
-			 (format t "Icon clicked!~%")
 			 (update-curr-hourly)
 			 (gtk-menu-popup menu)))))
   (loop (sleep 60)))
