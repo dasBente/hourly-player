@@ -36,7 +36,7 @@ XDG_RUNTIME_DIR=/run/user/1000 # or whatever is returned by echo $XDG_RUNTIME_DI
 
 For the above autostart of the tray icon to work, some adjustments to the current version of
 `tray-icon.lisp` need to be made. You need to adjust the paths defined at the start of the script:
- * `*path-to-play-hourly*` needs to point to the place you put play_hourly (e.g. the location of
-   this repo on your system)
+ * `path-to-play-hourly` in _play-hourly.lisp_ needs to point to the place you put play_hourly
+   (e.g. the location of this repo on your system)
  * `*path-to-icon*` needs to point to some image you want to use as a icon
  
