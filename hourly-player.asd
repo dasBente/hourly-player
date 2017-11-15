@@ -9,4 +9,6 @@
 		 :cl-cffi-gtk-gio
 		 :cl-cffi-gtk-pango
 		 :cl-cffi-gtk-cairo)
-    :components ((:file "tray-icon")))
+    :components ((:file "package")
+		 (:file "play-hourly" :depends-on ("package"))
+		 (:file "tray-icon" :depends-on ("package" "play-hourly"))))
