@@ -19,6 +19,17 @@
 		   "-C")))
 
 
+(defun lines (str)
+  (with-input-from-string (s str)
+    (loop for line = (read-line s nil) until (null line)
+	 collect line)))
+
+     
+(defun all-lists ()
+  "Get all available hourly lists"
+  (lines (play-hourly "-l")))
+
+
 (defun new-hourly ()
   "Change the hourly to a new random one"
   (play-hourly "-n"))
