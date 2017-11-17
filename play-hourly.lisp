@@ -5,18 +5,16 @@
 
 
 (let ((path-to-play-hourly "/home/dasbente/bin/play_hourly"))
-  (defun play-hourly (&optional args)
+  (defun play-hourly (&optional flag arg)
     "Run play_hourly from shell with the argument list args (as string)"
     (uiop:run-program (concatenate 'string
-				   path-to-play-hourly " " args)
+				   path-to-play-hourly " " flag " " arg)
 		      :output '(:string :stripped t))))
 
 
 (defun current-list (&optional new-list)
   "Get the current hourly list or change it to new-list"
-  (play-hourly (if new-list
-		   (concatenate 'string "-L " new-list)
-		   "-C")))
+  (play-hourly "-l" new-list))
 
 
 (defun lines (str)
@@ -27,19 +25,22 @@
      
 (defun all-lists ()
   "Get all available hourly lists"
-  (lines (play-hourly "-l")))
+  (lines (play-hourly "-A")))
 
 
-(defun new-hourly ()
+(defun all-hourlies (&optional from-list)
+  "Get all hourlies listed in a given list"
+  (lines (play-hourly "-a" from-list)))
+
+
+(defun random-hourly (&optional from-list)
   "Change the hourly to a new random one"
-  (play-hourly "-n"))
+  (play-hourly "-r" from-list))
 
 
 (defun current-default (&optional new-default)
   "Retrieve the current default hourly or set it to the given argument"
-  (play-hourly (if new-default
-		   (concatenate 'string "-D " new-default)
-		   "-d")))
+  (play-hourly "-d" new-default))
 
   
 (defun is-mute ()
@@ -49,19 +50,9 @@
 
 (defun toggle-mute ()
   "Toggles the current mute state of the player"
-  (let ((mute (is-mute)))
-    (if mute
-	(delete-file mute)
-	(with-open-file (str *mute-hourly-path* :direction :output)))))
+  (play-hourly "-m"))
 
 
 (defun current-hourly (&optional new-hourly)
   "Get the current hourly or set it to the value of the optional new-hourly"
-  (play-hourly (if new-hourly
-		   (concatenate 'string "-N " new-hourly)
-		   "-c")))
-  
-
-(defun random-hourly ()
-  "Change to a new randomly selected hourly"
-  (play-hourly "-n"))
+  (play-hourly "-c" new-hourly))
