@@ -149,7 +149,39 @@ mute() {
 
 # Print usage help
 usage() {
-    echo "Usage: $0 [-haAcCldnmM|-L [NEW_LIST]|-D [NEW_DEFAULT]|-N [NEW_HOURLY]]" 1>&2
+    cat << EOF
+Usage: $0 [-hclmdraA] [OPTIONS]
+
+Only one command line option is allowed at a time. No options will result in the
+current hourly to be played.
+
+    -h | --help                    --- Show this message.
+    -c | --current-hourly [OPTION] --- Get the current hourly or change it to
+                                       OPTION.
+    -l | --list           [OPTION] --- Get the currently selected list or change
+                                       this list to OPTION.
+    -m | --mute           [OPTION] --- Toggle the mute option or mute/unmute the
+                                       player by supplying 1/0 as OPTION 
+                                       respectively.
+    -d | --default        [OPTION] --- Get the current default hourly or set the
+                                       default to OPTION.
+    -r | --random-hourly  [OPTION] --- Choose a random new hourly either from 
+                                       the current list or the list supplied as
+                                       OPTION.
+    -a | -all             [OPTION] --- Print either all hourlies or all hourlies
+                                       in the list specified by OPTION.
+    -A | -all-lists                --- Print all available lists.
+
+If the LAST_UPDATE file in the .hourlyplayer directory is from the day before,
+play_hourly will automatically choose a new hourly from the selected list of
+hourlies.
+
+Special lists: There are some special parameters for the -l option:
+ all             - Select from all available hourlies
+ default         - Select only the hourly set in the config as default (-d)
+ prepended minus - Select from the complement of the given list 
+                   (e.g. only hourlies NOT on that list) 
+EOF
 }
 
 # Main function
