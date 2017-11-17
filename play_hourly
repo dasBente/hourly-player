@@ -82,7 +82,7 @@ update_hourly() {
 
 # Display current hourly
 current_hourly() {
-    if [[ "$1" -eq "" ]]; then
+    if [[ "$1" == "" ]]; then
 	cat "$CURRENT"
     else
         if [[ "$(list_hourlies)" =~ (^|[[:space:]])"$1"($|[[:space:]])  ]]; then
@@ -102,7 +102,7 @@ all_lists() {
 
 # Display current default
 current_default() {
-    if [[ "$1" -eq "" ]]; then
+    if [[ "$1" == "" ]]; then
         cat "$CONFIG" | grep default | cut -d'=' -f2
     else
 	sed -i s/default=.*/default="$2"/ "$CONFIG"
@@ -111,7 +111,7 @@ current_default() {
 
 # Print the currently selected list
 current_list() {
-    if [[ "$1" -eq "" ]]; then
+    if [[ "$1" == "" ]]; then
 	cat "$CONFIG" | grep hourly_list | sed s/hourly_list=//
     else
 	sed -i s/hourly_list=.*/hourly_list="$1"/ "$CONFIG"
@@ -120,7 +120,7 @@ current_list() {
 
 # Print all hourlies (optionally in a given list)
 all_hourlies() {
-    if [[ "$1" -eq "" ]]; then
+    if [[ "$1" == "" ]]; then
 	hourlies_in_list "all"
     else
 	hourlies_in_list "$1"
@@ -129,16 +129,16 @@ all_hourlies() {
 
 # Mute the hourly player
 mute() {
-    if [[ "$1" -eq "" ]]; then
+    if [[ "$1" == "" ]]; then
 	if [[ -e "$MUTE" ]]; then
 	    rm "$MUTE"
 	else
 	    touch "$MUTE"
 	fi
     else
-	if [[ "$1" -eq "0" ]]; then
+	if [[ "$1" == "1" ]]; then
 	    touch "$MUTE"
-	elif [[ "$1" -eq "1" ]]; then
+	elif [[ "$1" == "0" ]]; then
 	    rm "$MUTE"
 	else
 	    echo "Parameter $1 not known, please use either 0 or 1!"
