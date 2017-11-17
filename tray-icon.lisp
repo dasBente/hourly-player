@@ -56,6 +56,11 @@
     (gtk-widget-show-all window)))
 
 
+(defun build-hourly-chooser ()
+  "Build a window that let's the user select a hourly from a list of hourlies"
+  'nil)
+
+
 (defun build-menu ()
   "Builds a pop-up menu for the icon. Currently rebuilds the menu every time!"
   (let* ((menu (gtk-menu-new)) 
@@ -84,7 +89,7 @@
     (g-signal-connect next-hourly "activate"
 		      (lambda (widget)
 			(declare (ignore widget))
-			(random-hourly)))
+			(build-hourly-chooser)))
 
     ;; Process pressing the current list button
     (g-signal-connect item-current-list "activate"
