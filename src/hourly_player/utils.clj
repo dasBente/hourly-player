@@ -19,10 +19,17 @@
 
 (defn write-config
   "Writes a map to the config file"
-  [config-path config-map]
+  [config-map config-path]
   (spit config-path 
         (str/join "\n" (map (fn [[k v]] (str (name k) "=" v))
                                        config-map))))
+
+(defmacro config->
+  "Threads the body between reading from and writing to a config file"
+  [config-path & body]
+  `(-> (read-config ~config-path)
+       ~@body
+       (write-config ~config-path)))
 
 (defn rand-item
   "Returns a random item from a list of items"
