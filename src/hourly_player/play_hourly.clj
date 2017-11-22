@@ -23,12 +23,6 @@
    (play-hourly (:current config-map) (hour))
    config-map))
   
-(defn play-current
-  "Plays the current hourly as determined by a given config map"
-  [config-map]
-  (play-hourly (:current config-map)
-               (hour)))
-
 (defn needs-update?
   "Check whether the date saved in config is the same as the current one"
   [config-map]
