@@ -59,14 +59,14 @@
    (change-hourly config-map (random-hourly (:list config-map))))
   ([config-map new-hourly]
    (-> config-map
-       (assoc :current change-hourly)
+       (assoc :current new-hourly)
        (assoc :last-update (date)))))
 
 (defn refresh-hourly
   "Updates the hourly player config if necesary"
   [config-map]
   (if (needs-update? config-map)
-    (change-hourly)
+    (change-hourly config-map)
     config-map))
 
 (defn run-hourly-player
