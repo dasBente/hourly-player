@@ -20,7 +20,7 @@
    (sh "aplay" (hourly-path hourly clip)) ;; TODO: Move away from aplay, make asynchronous
    nil)
   ([config-map]
-   (play-hourly (:current config-map) (utils/hour))
+   (play-hourly (:current config-map) (hour))
    config-map))
   
 (defn play-current
@@ -48,27 +48,42 @@
   "Get all hourlies from a given list"
   ([] (hourlies))
   ([hourly-list]
-   (let [complement (= "-" (subs hourly-list 0 1))]
-     (if complement
-       (clojure.set/difference (hourlies) (hourlies-from-list (subs hourly-list 1)))
-       (into (sorted-set) (file-lines (str lists-path "/" hourly-list)))))))
+   (if (str/blank? hourly-list)
+     (hourlies)
+     (let [complement (= "-" (subs hourly-list 0 1))]
+       (if complement
+         (clojure.set/difference (hourlies) (hourlies-from-list (subs hourly-list 1)))
+         (into (sorted-set) (file-lines (str lists-path "/" hourly-list))))))))
 
 (defn random-hourly
   "Generates a new hourly from all hourlies or given list"
   [& args] (rand-item (seq (apply hourlies-from-list args))))
 
-(defn update-hourly
-  "Updates the current hourly and change date in a given config map"
-  [config-map new-hourly]
-  (-> config-map
-      (assoc :current new-hourly)
-      (assoc :last-update (date))))
+(defn change-hourly
+  "Updates the current hourly and changes date in a given config map"
+  ([config-map]
+   (change-hourly config-map (random-hourly (:list config-map))))
+  ([config-map new-hourly]
+   (-> config-map
+       (assoc :current change-hourly)
+       (assoc :last-update (date)))))
+
+(defn refresh-hourly
+  "Updates the hourly player config if necesary"
+  [config-map]
+  (if (needs-update? config-map)
+    (change-hourly)
+    config-map))
 
 (defn run-hourly-player
   "Checks for a date change and updates the current hourly"
   [config-map]
-  (if (needs-update? config-map)
-    (-> config-map
-        (update-hourly (random-hourly (:list config-map)))
-        (run-hourly-player))
-    (play-hourly config-map)))
+  (-> config-map
+      (refresh-hourly)
+      (play-hourly)))
+
+(defn init-hourly-config
+  "Create a initial config map and updates it"
+  []
+  (refresh-hourly
+   {:list "" :mute "0"}))
