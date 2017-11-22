@@ -17,7 +17,7 @@
 (defn play-hourly
   "Plays the given clip for a given hourly"
   ([hourly clip]
-   (sh "aplay" (hourly-path hourly clip)) ;; TODO: Move away from aplay, make asynchronous
+   (play-file (hourly-path hourly clip)) ;; TODO: Move away from aplay, make asynchronous
    nil)
   ([config-map]
    (play-hourly (:current config-map) (hour))

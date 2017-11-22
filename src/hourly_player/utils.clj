@@ -1,6 +1,19 @@
 (ns hourly-player.utils
+  (:import [java.applet Applet]
+           [java.io File]
+           [java.net URL])
   (:require [clojure.string :as str]
             [clojure.java.io :as io]))
+
+(defn play-url
+  "Play a given audio file"
+  [url-string]
+  (.play (Applet/newAudioClip (URL. url-string))))
+
+(defn play-file [file-name]
+  (let [absolute-name (.getAbsolutePath (File. file-name))
+        url-string (str "file://" absolute-name)]
+    (play-url url-string)))
 
 (defn file-lines
   "Returns a list of all of a files lines"
