@@ -1,9 +1,8 @@
 (ns hourly-player.tray-icon 
   (:require [hourly-player.play-hourly :refer :all]
             [hourly-player.utils :refer :all])
-  (:import [java.awt.event ActionListener MouseListener]
-           [java.awt SystemTray TrayIcon PopupMenu MenuItem Toolkit]
-           [javax.swing JPopupMenu JMenuItem]))
+  (:import [java.awt.event ActionListener]
+           [java.awt SystemTray TrayIcon PopupMenu MenuItem Toolkit]))
 
 (defn maybe-show-popup
   "Takes a mouse event and a popup callback that is called when the popup was truly triggered"
