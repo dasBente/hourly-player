@@ -1,6 +1,7 @@
 (ns hourly-player.core
   (:require [timely.core :as timely]
-            [hourly-player.play-hourly :refer :all])
+            [hourly-player.play-hourly :refer :all]
+            [hourly-player.tray-icon :refer :all])
   (:gen-class))
 
 (defn run
@@ -11,7 +12,8 @@
               (timely/hourly) 
               (fn [] (hourly-player.utils/config-> (clojure.java.io/resource "config")
                                (run-hourly-player))))]
-    (timely/start-schedule item)))
+    (timely/start-schedule item))
+  (run-tray-icon!))
 
 (defn -main
   "Start hourly player schedule."
