@@ -7,7 +7,7 @@
 
 (def hourlyplayer-dir (str (System/getProperty "user.home") "/.hourlyplayer"))
 (def hourlies-path (str hourlyplayer-dir "/hourlies"))
-(def config-path (.getFile (io/resource "config")))
+(def config-path (str hourlyplayer-dir "/.config"))
 (def lists-path (str hourlyplayer-dir "/lists"))
 
 (defn hourly-path
