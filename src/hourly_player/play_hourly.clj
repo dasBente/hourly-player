@@ -4,9 +4,10 @@
             [clojure.string :as str]
             [hourly-player.utils :refer :all]))
 
-(def hourlies-path (.getFile (io/resource "hourlies")))
+(def hourlyplayer-dir (str (System/getProperty "user.home") "/.hourlyplayer"))
+(def hourlies-path (str hourlyplayer-dir "/hourlies"))
 (def config-path (.getFile (io/resource "config")))
-(def lists-path (.getFile (io/resource "lists")))
+(def lists-path (str hourlyplayer-dir "/lists"))
 
 (defn hourly-path
   "Checks if a given hourly/clip combo exists and returns it's string path or nil if it does not."
@@ -20,7 +21,8 @@
    (play-file (hourly-path hourly clip)) ;; TODO: Move away from aplay, make asynchronous
    nil)
   ([config-map]
-   (play-hourly (:current config-map) (hour))
+   (when (= "0" (:mute config-map))
+     (play-hourly (:current config-map) (hour)))
    config-map))
   
 (defn needs-update?
