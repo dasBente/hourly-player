@@ -4,6 +4,8 @@
   :license {:name "GPL"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [factual/timely "0.0.3"]]
-  :main ^:skip-aot hourly-player.core
+  ;:main ^:skip-aot hourly-player.core
+  :main hourly-player.core
+  :aot [hourly-player.core]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
