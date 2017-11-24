@@ -2,7 +2,8 @@
   (:require [clojure.java.shell :refer [sh]]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [hourly-player.utils :refer :all]))
+            [hourly-player.utils :refer :all]
+            [clojure.set :as set]))
 
 (def hourlyplayer-dir (str (System/getProperty "user.home") "/.hourlyplayer"))
 (def hourlies-path (str hourlyplayer-dir "/hourlies"))
@@ -48,7 +49,7 @@
      (hourlies)
      (let [complement (= "-" (subs hourly-list 0 1))]
        (if complement
-         (clojure.set/difference (hourlies) (hourlies-from-list (subs hourly-list 1)))
+         (set/difference (hourlies) (hourlies-from-list (subs hourly-list 1)))
          (into (sorted-set) (file-lines (str lists-path "/" hourly-list))))))))
 
 (defn random-hourly
