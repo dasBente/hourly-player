@@ -12,14 +12,15 @@
               (timely/hourly) 
               (fn [] (hourly-player.utils/config-> (clojure.java.io/resource "config")
                                (run-hourly-player))))]
-    (timely/start-schedule item))
-  (run-tray-icon!))
+    (timely/start-schedule item)))
 
 (defn -main
   "Start hourly player schedule."
   [& args]
-  (run)
-  ()
-  (loop []
-    (Thread/sleep (* 1000 60 2))
-    (recur)))
+  (run-tray-icon!)
+  (let [schedule-id (run)]
+    (.addShutdownHook (Runtime/getRuntime) 
+                      (Thread. (fn [] (timely/end-schedule schedule-id))))
+    (loop []
+      (Thread/sleep (* 1000 60 2))
+      (recur))))
