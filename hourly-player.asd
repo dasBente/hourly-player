@@ -1,6 +1,7 @@
 ;;;; -*- Lisp -*-
 
 (defsystem "hourly-player"
+    :serial t
     :depends-on (:cl-cffi-gtk
 		 :cl-cffi-gtk-glib
 		 :cl-cffi-gtk-gobject
@@ -10,5 +11,5 @@
 		 :cl-cffi-gtk-pango
 		 :cl-cffi-gtk-cairo)
     :components ((:file "package")
-		 (:file "play-hourly" :depends-on ("package"))
-		 (:file "tray-icon" :depends-on ("package" "play-hourly"))))
+		 (:file "play-hourly")
+		 (:file "tray-icon")))
