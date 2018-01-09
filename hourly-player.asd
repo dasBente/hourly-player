@@ -9,7 +9,9 @@
 		 :cl-cffi-gtk-gdk-pixbuf
 		 :cl-cffi-gtk-gio
 		 :cl-cffi-gtk-pango
-		 :cl-cffi-gtk-cairo)
+		 :cl-cffi-gtk-cairo
+                 :cl-ppcre)
     :components ((:file "package")
+                 (:file "config")
 		 (:file "play-hourly")
-		 (:file "tray-icon")))
+		 (:file "core")))

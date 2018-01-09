@@ -1,7 +1,11 @@
-(in-package :hourly-player.play-hourly)
+(in-package :hourly-player/play-hourly)
 
 
-(defparameter *mute-hourly-path* "~/.hourlyplayer/MUTE")
+(defconstant +config-path+ "~/.hourlyplayer/config")
+(defconstant +mute-hourly-path+ "~/.hourlyplayer/MUTE")
+
+
+(defvar *config* (read-config +config-path+))
 
 
 (let ((path-to-play-hourly "/home/dasbente/bin/play_hourly"))
@@ -15,12 +19,6 @@
 (defun current-list (&optional new-list)
   "Get the current hourly list or change it to new-list"
   (play-hourly "-l" new-list))
-
-
-(defun lines (str)
-  (with-input-from-string (s str)
-    (loop for line = (read-line s nil) until (null line)
-	 collect line)))
 
      
 (defun all-lists ()
@@ -45,7 +43,7 @@
   
 (defun is-mute ()
   "Checks whether the player is currently muted"
-  (probe-file *mute-hourly-path*))
+  (probe-file +mute-hourly-path+))
 
 
 (defun toggle-mute ()
