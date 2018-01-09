@@ -1,3 +1,11 @@
+(defpackage :hourly-player/config
+  (:use :cl)
+  (:export :lines-from-stream
+           :lines-from-file
+           :lines
+           :read-config
+           :write-config))
+
 (defpackage :hourly-player/play-hourly
   (:use :cl :hourly-player/config)
   (:export :play-hourly
@@ -22,11 +30,3 @@
         :hourly-player/play-hourly
 	:common-lisp)
   (:export :run))
-
-(defpackage :hourly-player/config
-  (:use :cl)
-  (:export :lines-from-stream
-           :lines-from-file
-           :lines
-           :read-config
-           :write-config))

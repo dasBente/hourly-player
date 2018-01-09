@@ -1,4 +1,4 @@
 #!/bin/bash
 
 /usr/bin/sbcl --eval '(asdf:load-system "hourly-player")' \
-	      --eval '(hourly-player:run)' --noinform
+	      --eval '(hourly-player/core:run)' --noinform

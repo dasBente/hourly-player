@@ -1,7 +1,7 @@
-(in-package :hourly-player)
+(in-package :hourly-player/core)
 
 
-(defparameter *path-to-icon* "/home/dasbente/.hourlyplayer/placeholder.png")
+(defconstant +path-to-icon+ "/home/dasbente/.hourlyplayer/placeholder.png")
 
 
 (defun build-list-chooser (current-list)
@@ -113,7 +113,7 @@
   (within-main-loop
    (let* ((icon (make-instance 'gtk-status-icon
 			       :pixbuf (gdk-pixbuf-new-from-file
-					*path-to-icon*)
+					+path-to-icon+)
 			      :tooltip-text "Configure hourly player")))
 
      ;; Register a user clicking the icon
