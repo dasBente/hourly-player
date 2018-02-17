@@ -1,0 +1,22 @@
+{
+  "name": "hourly-player",
+  "version": "0.0.1",
+  "description": "Electron-based hourly player",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dasbente/hourly-player.git"
+  },
+  "author": "Tobias Möhring (dasbente@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dasbente/hourly-player/issues"
+  },
+  "homepage": "https://github.com/dasbente/hourly-player#readme"
+}
