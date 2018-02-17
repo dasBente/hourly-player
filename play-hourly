@@ -1,0 +1,1 @@
+aplay "./resources/hourlies/$1/$2.wav"
