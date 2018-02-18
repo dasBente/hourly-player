@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/dasbente/hourly-player/issues"
   },
-  "homepage": "https://github.com/dasbente/hourly-player#readme"
+  "homepage": "https://github.com/dasbente/hourly-player#readme",
+  "dependencies": {
+    "moment": "^2.20.1"
+  }
 }

@@ -2,36 +2,36 @@ const {app, Menu, Tray} = require('electron');
 const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const moment = require('moment');
 
-let tray;
+let tray, config;
 
-function readConfig() {
+function readConfig(path) {
   let res;
 
   try {
-    res = fs.readFileSync('./resources/config.json', 'utf8');
+    res = fs.readFileSync(path, 'utf8');
     res = JSON.parse(res);
   } catch (err) {
-    console.log(`Caught {err}`);
+    console.log(`Caught ${err}`);
     res = undefined;
   }
   
   return res;
 }
 
-function writeConfig(config) {
-  fs.writeFile('./resources/config.json', JSON.stringify(config), {
+function writeConfig(path, config) {
+  fs.writeFile(path, JSON.stringify(config), {
     encoding: 'utf8',
   }, (err) => {throw err;});
 }
 
-function play() {
-  let currentHourly = 'Shigure', currentHour = '00';
-  exec(`sh ./play-hourly ${currentHourly} ${currentHour}`, (err, stdout, stderr) => {
+function play(hourly, hour) {
+  exec(`sh ./play-hourly ${hourly} ${hour}`, (err, stdout, stderr) => {
     console.log(`${stdout}`);
     console.log(`${stderr}`);
     
-    if (error !== null) {
+    if (err !== null) {
       console.log(`exec error: ${err}`);
     }
   });
@@ -39,19 +39,55 @@ function play() {
 
 let contextMenu;
 
-function buildContextMenu() {
+function buildContextMenu(config) {
   return Menu.buildFromTemplate([
-    {label: 'Shigure', click: play}
+    {
+      label: config.current, 
+      click: () => {play(config.current, currentHour())},
+    }
   ]);
 }
 
+function today() {
+  return moment().format('YYYY-MM-DD');
+}
+
+function currentHour() {
+  return moment().format('HH');
+}
+
+function nextHourly(config) {
+  return "Shigure";
+}
+
+/**
+ * Reads the players config file or creates a minimal required config
+ */
+function initConfig(path) {
+  let config = readConfig(path);
+  
+  if (!config) {
+    config = {};
+  }
+  
+  let t = today();
+
+  if (!config.today || config.today !== t || !config.current) {
+    config.today = t;
+    config.current = nextHourly(config);
+  }
+
+  return config;
+}
+
 app.on('ready', () => {
+  let config = initConfig('./resources/config.json');
+
   tray = new Tray('./resources/icon.png');
-  contextMenu = buildContextMenu();
-  tray.setContextMenu(contextMenu);
+  tray.setContextMenu(buildContextMenu(config));
 
   tray.on('click', () => {
-    play();
+    play(config.current, currentHour());
   });
 
 });
