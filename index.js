@@ -1,19 +1,78 @@
+/* Imports */
 const {app, Menu, Tray} = require('electron');
 const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const moment = require('moment');
 
-let tray;
+/* Constants */
+
+// File paths
+const dir = path.resolve(__dirname); // This files directory
+const resDir = path.join(dir, 'resources');
+const hourlyDir = path.join(resDir, 'hourlies');
+const listsDir = path.join(resDir, 'lists');
+const configDir = path.join(resDir, 'config.json');
+const iconDir = path.join(resDir, 'icon.png');
+
+/* UI Code */
+let tray, contextMenu;
+
+/**
+ * Builds a new context menu using informations from a config file
+ */
+function buildContextMenu(config) {
+  return Menu.buildFromTemplate([
+    {
+      label: config.current, 
+      click: () => {play(config.current, currentHour())},
+    }
+  ]);
+}
+
+app.on('ready', () => {
+  let config = initConfig(configDir);
+
+  tray = new Tray(iconDir);
+  tray.setContextMenu(buildContextMenu(config));
+
+  tray.on('click', () => {
+    play(config.current, currentHour());
+  });
+
+});
+
+/* Helper functions */
+
+/**
+ * Gets todays date
+ */
+function today() {
+  return moment().format('YYYY-MM-DD');
+}
+
+/**
+ * Gets the current hour
+ */
+function currentHour() {
+  return moment().format('HH');
+}
+
+/**
+ * Generates the next hourly using the config file 
+ */
+function nextHourly(config) {
+  return "Shigure";
+}
 
 /**
  * Reads a given .JSON file and parses it if possible
  */
-function readConfig(path) {
+function readConfig(confpath) {
   let res;
 
   try {
-    res = fs.readFileSync(path, 'utf8');
+    res = fs.readFileSync(confpath, 'utf8');
     res = JSON.parse(res);
   } catch (err) {
     console.log(`Caught ${err}`);
@@ -26,8 +85,8 @@ function readConfig(path) {
 /**
  * Stringifies a config object and saves it to the file at path
  */
-function writeConfig(path, config) {
-  fs.writeFile(path, JSON.stringify(config), {
+function writeConfig(confpath, config) {
+  fs.writeFile(confpath, JSON.stringify(config), {
     encoding: 'utf8',
   }, (err) => {throw err;});
 }
@@ -35,8 +94,8 @@ function writeConfig(path, config) {
 /**
  * Reads the players config file or creates a minimal required config
  */
-function initConfig(path) {
-  let config = readConfig(path);
+function initConfig(confpath) {
+  let config = readConfig(confpath);
   
   if (!config) {
     config = {};
@@ -80,50 +139,3 @@ function play(hourly, hour) {
     }
   });
 }
-
-let contextMenu;
-
-/**
- * Builds a new context menu using informations from a config file
- */
-function buildContextMenu(config) {
-  return Menu.buildFromTemplate([
-    {
-      label: config.current, 
-      click: () => {play(config.current, currentHour())},
-    }
-  ]);
-}
-
-/**
- * Gets todays date
- */
-function today() {
-  return moment().format('YYYY-MM-DD');
-}
-
-/**
- * Gets the current hour
- */
-function currentHour() {
-  return moment().format('HH');
-}
-
-/**
- * Generates the next hourly using the config file 
- */
-function nextHourly(config) {
-  return "Shigure";
-}
-
-app.on('ready', () => {
-  let config = initConfig('./resources/config.json');
-
-  tray = new Tray('./resources/icon.png');
-  tray.setContextMenu(buildContextMenu(config));
-
-  tray.on('click', () => {
-    play(config.current, currentHour());
-  });
-
-});
