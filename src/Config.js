@@ -24,7 +24,7 @@ class Config {
 
   save(source) {
     let src = source || this.source;
-    fs.writeFileSync(confpath, JSON.stringify(config));
+    fs.writeFileSync(src, this.toString());
   }
 
   setHourly(hourly) {

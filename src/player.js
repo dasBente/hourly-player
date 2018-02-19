@@ -26,14 +26,14 @@ const getLists = () => allFiles(dirs.lists);
 const readLines = source => fs.readFileSync(source).toSting().split('\n');
 
 /* Returns a list of all hourlies within the hourlies directory */
-const hourlies = () => allDirs(dirs.hourlies);
+const allHourlies = () => allDirs(dirs.hourlies);
 
 /* Returns all hourlies on a given list or all hourlies if the list parameter is empty */
 function hourliesFromList(list) {
     let complement = false;
 
   if(!list) {
-    return this.hourlies();
+    return allHourlies();
   }
 
   if (list.slice(0,1) === '-') {
@@ -41,14 +41,13 @@ function hourliesFromList(list) {
     list = list.slice(1);
   }
 
-  let hourlies = this.readLines(path.join(dirs.lists, list));
+  let hourlies = readLines(path.join(dirs.lists, list));
   
   if (complement) {
-    hourlies = this.hourlies().filter(hourly => !hourlies.includes(hourly));
+    hourlies = allHourlies().filter(hourly => !hourlies.includes(hourly));
   }
 
   return hourlies;
-  }
 }
 
 module.exports = {
@@ -59,6 +58,6 @@ module.exports = {
   allDirs: allDirs,
   getLists: getLists,
   readLines: readLines,
-  hourlies: hourlies,
+  allHourlies: allHourlies,
   hourliesFromList: hourliesFromList,
 };
