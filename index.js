@@ -59,73 +59,6 @@ function play(hourly, hour) {
 /* Helper functions */
 
 /**
- * Gets todays date
- */
-const today = () => moment().format('YYYY-MM-DD');
-
-/**
- * Gets the current hour
- */
-const currentHour = () => moment().format('HH');
-
-/**
- * Generates the next hourly using the config file 
- */
-function nextHourly(config) {
-  return "Shigure";
-}
-
-/**
- * Determine whehter a given file is a directory or not
- */
-const isDir = source => fs.lstatSync(source).isDirectory();
-
-/**
- * Retrieves all directories at a given path
- */
-function allDirs(source) {
-  return fs.readdirSync(source).map(
-    name => path.join(source, name)
-  ).filter(isDirectory);
-}
-
-/**
- * Get array containing all hourly lists
- */
-const getLists = () => allDirs(listsDir)
-
-/**
- * Reads a file into an array of lines
- */
-const readLines = source => fs.readFileSync(source).toString().split('\n');
-
-/**
- * Returns an array containing every registered hourly
- */
-const allHourlies = () => allDirs(hourlyDir);
-
-/**
- * Returns an array of all hourlies in a given list. A prepended - will instead return the
- * complement. 
- */
-function hourliesFromList(list) {
-  let complement = false;
-
-  if (list.slice(0,1) === '-') {
-    complement = true;
-    list = list.slice(1);
-  }
-
-  let hourlies = readLines(path.join(listsDir, list));
-  
-  if (complement) {
-    hourlies = allHourlies().filter(hourly => !hourlies.includes(hourly));
-  }
-
-  return hourlies;
-}
-
-/**
  * Reads a given .JSON file and parses it if possible
  */
 function readConfig(confpath) {
@@ -186,4 +119,77 @@ function toggleMute(config) {
   } else {
     config.mute = '0';
   }
+}
+
+/**
+ * Gets todays date
+ */
+const today = () => moment().format('YYYY-MM-DD');
+
+/**
+ * Gets the current hour
+ */
+const currentHour = () => moment().format('HH');
+
+/**
+ * Determine whehter a given file is a directory or not
+ */
+const isDir = source => fs.lstatSync(source).isDirectory();
+
+/**
+ * Retrieves all files from a directory
+ */
+const allFiles = source => fs.readdirSync(source).map(name => path.join(source, name));
+
+/**
+ * Retrieves all directories at a given path
+ */
+const allDirs = source => allFiles(source).filter(isDir);
+
+/**
+ * Get array containing all hourly lists
+ */
+const getLists = () => allFiles(listsDir)
+
+/**
+ * Reads a file into an array of lines
+ */
+const readLines = source => fs.readFileSync(source).toString().split('\n');
+
+/**
+ * Returns an array containing every registered hourly
+ */
+const allHourlies = () => allDirs(hourlyDir);
+
+/**
+ * Returns an array of all hourlies in a given list. A prepended - will instead return the
+ * complement. 
+ */
+function hourliesFromList(list) {
+  let complement = false;
+
+  if(!list) {
+    return allHourlies();
+  }
+
+  if (list.slice(0,1) === '-') {
+    complement = true;
+    list = list.slice(1);
+  }
+
+  let hourlies = readLines(path.join(listsDir, list));
+  
+  if (complement) {
+    hourlies = allHourlies().filter(hourly => !hourlies.includes(hourly));
+  }
+
+  return hourlies;
+}
+
+/**
+ * Generates the next hourly using the config file 
+ */
+function nextHourly(config) {
+  let list = hourliesFromList(config.list);
+  return list[Math.floor(Math.random() * list.length)];
 }
