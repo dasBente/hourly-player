@@ -42,6 +42,20 @@ app.on('ready', () => {
 
 });
 
+/**
+ * (Currently) Relays a given hourly and hour to a script to play them using aplay
+ */
+function play(hourly, hour) {
+  exec(`sh ./play-hourly ${hourly} ${hour}`, (err, stdout, stderr) => {
+    console.log(`${stdout}`);
+    console.log(`${stderr}`);
+    
+    if (err !== null) {
+      console.log(`exec error: ${err}`);
+    }
+  });
+}
+
 /* Helper functions */
 
 /**
@@ -172,18 +186,4 @@ function toggleMute(config) {
   } else {
     config.mute = '0';
   }
-}
-
-/**
- * (Currently) Relays a given hourly and hour to a script to play them using aplay
- */
-function play(hourly, hour) {
-  exec(`sh ./play-hourly ${hourly} ${hour}`, (err, stdout, stderr) => {
-    console.log(`${stdout}`);
-    console.log(`${stderr}`);
-    
-    if (err !== null) {
-      console.log(`exec error: ${err}`);
-    }
-  });
 }
