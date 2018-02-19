@@ -6,6 +6,9 @@ const moment = require('moment');
 
 let tray;
 
+/**
+ * Reads a given .JSON file and parses it if possible
+ */
 function readConfig(path) {
   let res;
 
@@ -20,12 +23,18 @@ function readConfig(path) {
   return res;
 }
 
+/**
+ * Stringifies a config object and saves it to the file at path
+ */
 function writeConfig(path, config) {
   fs.writeFile(path, JSON.stringify(config), {
     encoding: 'utf8',
   }, (err) => {throw err;});
 }
 
+/**
+ * Reads the players config file or creates a minimal required config
+ */
 function initConfig(path) {
   let config = readConfig(path);
   
@@ -47,14 +56,20 @@ function initConfig(path) {
   return config;
 }
 
+/**
+ * Toggles the configs mute property on (1) or off (0)
+ */
 function toggleMute(config) {
-  if (config.mute == '0') {
+  if (config.mute && config.mute == '0') {
     config.mute = '1';
   } else {
     config.mute = '0';
   }
 }
 
+/**
+ * (Currently) Relays a given hourly and hour to a script to play them using aplay
+ */
 function play(hourly, hour) {
   exec(`sh ./play-hourly ${hourly} ${hour}`, (err, stdout, stderr) => {
     console.log(`${stdout}`);
@@ -68,6 +83,9 @@ function play(hourly, hour) {
 
 let contextMenu;
 
+/**
+ * Builds a new context menu using informations from a config file
+ */
 function buildContextMenu(config) {
   return Menu.buildFromTemplate([
     {
@@ -77,21 +95,26 @@ function buildContextMenu(config) {
   ]);
 }
 
+/**
+ * Gets todays date
+ */
 function today() {
   return moment().format('YYYY-MM-DD');
 }
 
+/**
+ * Gets the current hour
+ */
 function currentHour() {
   return moment().format('HH');
 }
 
+/**
+ * Generates the next hourly using the config file 
+ */
 function nextHourly(config) {
   return "Shigure";
 }
-
-/**
- * Reads the players config file or creates a minimal required config
- */
 
 app.on('ready', () => {
   let config = initConfig('./resources/config.json');
