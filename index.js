@@ -132,17 +132,16 @@ function readConfig(confpath) {
  * Stringifies a config object and saves it to the file at path
  */
 function writeConfig(confpath, config) {
-  fs.writeFile(confpath, JSON.stringify(config), {
-    encoding: 'utf8',
-  }, (err) => {throw err;});
+  fs.writeFileSync(confpath, JSON.stringify(config));
 }
 
 /**
  * Reads the players config file or creates a minimal required config
  */
 function initConfig(confpath) {
-  let config = readConfig(confpath);
-  
+  let conf = readConfig(confpath);
+  let config = conf;
+
   if (!config) {
     config = {};
   }
@@ -157,6 +156,9 @@ function initConfig(confpath) {
   if (!config.mute) {
     config.mute = '0';
   }
+
+  // Make sure to update any changes (e.g. relevant date change or initialization)
+  if (config !== conf) writeConfig(confpath, config);
 
   return config;
 }
