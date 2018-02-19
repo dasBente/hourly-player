@@ -12,6 +12,7 @@ class Config {
     let t = today();
     
     this.source = source;
+    this.list = conf.list? conf.list : '';
 
     if (!conf.today || conf.today !== t || !conf.current) {
       this.setHourly();
@@ -19,7 +20,6 @@ class Config {
     }
     
     this.toggleMute(conf.mute);
-    this.list = conf.list? conf.list : '';
   }
 
   save(source) {
@@ -32,7 +32,8 @@ class Config {
       this.current = hourly;
     } else {
       let list = hourliesFromList(this.list);
-      return list[Math.floor(Math.random() * list.length)];
+      console.log(list.length);
+      this.current = list[Math.floor(Math.random() * list.length)];
     }
   }
 

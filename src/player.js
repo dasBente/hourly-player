@@ -14,10 +14,7 @@ const currentHour = () => moment().format('HH');
 const isDir = source => fs.lstatSync(source).isDirectory();
 
 /* Returns a list of all files in a given directory source */
-const allFiles = source => fs.readdirSync(source).map(name => path.join(source, name));
-
-/* Returns all directories within a given directory source */
-const allDirs = source => allFiles(source).filter(isDir);
+const allFiles = source => fs.readdirSync(source);
 
 /* Returns a array of all list-files in the lists directory */
 const getLists = () => allFiles(dirs.lists);
@@ -26,13 +23,15 @@ const getLists = () => allFiles(dirs.lists);
 const readLines = source => fs.readFileSync(source).toSting().split('\n');
 
 /* Returns a list of all hourlies within the hourlies directory */
-const allHourlies = () => allDirs(dirs.hourlies);
+const allHourlies = () => allFiles(dirs.hourlies);
 
 /* Returns all hourlies on a given list or all hourlies if the list parameter is empty */
 function hourliesFromList(list) {
-    let complement = false;
+  let complement = false;
 
   if(!list) {
+    let a = allHourlies();
+    console.log(a.length);
     return allHourlies();
   }
 
@@ -55,7 +54,6 @@ module.exports = {
   currentHour: currentHour,
   isDir: isDir,
   allFiles: allFiles,
-  allDirs: allDirs,
   getLists: getLists,
   readLines: readLines,
   allHourlies: allHourlies,

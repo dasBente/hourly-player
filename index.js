@@ -30,6 +30,8 @@ app.on('ready', () => {
   tray = new Tray(dirs.icon);
   tray.setContextMenu(buildContextMenu(config));
 
+  console.log(config.toString());
+
   tray.on('click', () => {
     play(config.current, currentHour());
   });
