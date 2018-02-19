@@ -105,7 +105,7 @@ function hourliesFromList(list) {
   let hourlies = readLines(path.join(listsDir, list));
   
   if (complement) {
-    hourlies = allHourlies().filter(hourly => !(hourly in hourlies));
+    hourlies = allHourlies().filter(hourly => !hourlies.includes(hourly));
   }
 
   return hourlies;
