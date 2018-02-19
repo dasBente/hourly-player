@@ -4,7 +4,7 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const moment = require('moment');
 
-let tray, config;
+let tray;
 
 function readConfig(path) {
   let res;
@@ -24,6 +24,35 @@ function writeConfig(path, config) {
   fs.writeFile(path, JSON.stringify(config), {
     encoding: 'utf8',
   }, (err) => {throw err;});
+}
+
+function initConfig(path) {
+  let config = readConfig(path);
+  
+  if (!config) {
+    config = {};
+  }
+  
+  let t = today();
+
+  if (!config.today || config.today !== t || !config.current) {
+    config.today = t;
+    config.current = nextHourly(config);
+  }
+
+  if (!config.mute) {
+    config.mute = '0';
+  }
+
+  return config;
+}
+
+function toggleMute(config) {
+  if (config.mute == '0') {
+    config.mute = '1';
+  } else {
+    config.mute = '0';
+  }
 }
 
 function play(hourly, hour) {
@@ -63,22 +92,6 @@ function nextHourly(config) {
 /**
  * Reads the players config file or creates a minimal required config
  */
-function initConfig(path) {
-  let config = readConfig(path);
-  
-  if (!config) {
-    config = {};
-  }
-  
-  let t = today();
-
-  if (!config.today || config.today !== t || !config.current) {
-    config.today = t;
-    config.current = nextHourly(config);
-  }
-
-  return config;
-}
 
 app.on('ready', () => {
   let config = initConfig('./resources/config.json');
@@ -91,4 +104,3 @@ app.on('ready', () => {
   });
 
 });
-
