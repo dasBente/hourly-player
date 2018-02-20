@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/dasbente/hourly-player#readme",
   "dependencies": {
-    "moment": "^2.20.1"
+    "moment": "^2.20.1",
+    "node-cron": "^1.2.1",
+    "play-sound": "^1.1.2"
   }
 }

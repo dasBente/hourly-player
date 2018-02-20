@@ -31,7 +31,6 @@ function hourliesFromList(list) {
 
   if(!list) {
     let a = allHourlies();
-    console.log(a.length);
     return allHourlies();
   }
 
