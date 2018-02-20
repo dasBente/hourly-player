@@ -13,12 +13,7 @@ class Config {
     
     this.source = source;
     this.list = conf.list? conf.list : '';
-
-    if (!conf.today || conf.today !== t || !conf.current) {
-      this.setHourly();
-      this.today = t;
-    }
-    
+    this.update(config);
     this.toggleMute(conf.mute);
   }
 
@@ -32,9 +27,10 @@ class Config {
       this.current = hourly;
     } else {
       let list = hourliesFromList(this.list);
-      console.log(list.length);
       this.current = list[Math.floor(Math.random() * list.length)];
     }
+
+    this.today = today();
   }
 
   toggleMute(value) {
@@ -42,6 +38,20 @@ class Config {
       this.mute === '0'? this.mute = '1' : this.mute = '0';
     } else {
       this.mute = value;
+    }
+  }
+
+  update(config) {
+    let t = today();
+
+    if (!this.today || t !== this.today || !this.current) {
+      this.setHourly();
+    } else if (config) {
+      if (config.current) {
+        this.current = config.current;
+      } else {
+        this.setHourly();
+      };
     }
   }
 
