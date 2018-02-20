@@ -44,14 +44,11 @@ class Config {
   update(config) {
     let t = today();
 
-    if (!this.today || t !== this.today || !this.current) {
+    if (!config && (this.today !== t || !this.current) || !config.today || !config.current) {
       this.setHourly();
-    } else if (config) {
-      if (config.current) {
-        this.current = config.current;
-      } else {
-        this.setHourly();
-      };
+    } else {
+      this.current = config.current;
+      this.today = config.today;
     }
   }
 
