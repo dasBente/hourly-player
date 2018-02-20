@@ -4,28 +4,56 @@ const moment = require('moment');
 
 const dirs = require('./directories.js');
 
-/* Return the date of the current day (in year-month-day format) */
+/** 
+ * Return todays date 
+ * @returns {string} Todays date in YYYY-MM-DD format 
+ */
 const today = () => moment().format('YYYY-MM-DD');
 
-/* Return the current hour of the day */
+/** 
+ * Return the current hour of the day 
+ * @returns {string} Current hour in 24h Format with prepended 0 for values below 10.
+ */
 const currentHour = () => moment().format('HH');
 
-/* Checks if the file at source is a directory */
+/** 
+ * Check if a file is a directory.
+ * @param {string} source - The file to check.
+ * @returns {bool} 
+ */
 const isDir = source => fs.lstatSync(source).isDirectory();
 
-/* Returns a list of all files in a given directory source */
+/** 
+ * Read all filenames in a given location. 
+ * @param {string} source - The directorie whose files will be read. 
+ * @returns {string[]} Array of all files in source.
+ */
 const allFiles = source => fs.readdirSync(source);
 
-/* Returns a array of all list-files in the lists directory */
+/** 
+ * Gets a list of all known hourly lists. 
+ * @returns {string[]} Array of the known hourly lists.
+ */
 const getLists = () => allFiles(dirs.lists);
 
-/* Reads all lines from a given file source into a array of these lines */
-const readLines = source => fs.readFileSync(source).toSting().split('\n');
-
-/* Returns a list of all hourlies within the hourlies directory */
+/** 
+ * Gets a list of all known hourlies.
+ * @returns {string[]} Array of known hourly lists
+ */
 const allHourlies = () => allFiles(dirs.hourlies);
 
-/* Returns all hourlies on a given list or all hourlies if the list parameter is empty */
+/**
+ * Reads a file linewise
+ * @param {string} source - Path to the file to be read.
+ * @returns {string[]} Array of the files lines.
+ */
+const readLines = source => fs.readFileSync(source).toSting().split('\n');
+
+/** 
+ * Reads all hourlies from a list.
+ * @param {string} [list] - The list to read from or all hourlies if not set.
+ * @returns {string[]} Array of all hourlies in the selected list.
+ */
 function hourliesFromList(list) {
   let complement = false;
 

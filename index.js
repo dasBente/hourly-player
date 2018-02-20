@@ -14,7 +14,9 @@ const {currentHour} = require('./src/player.js');
 let tray, contextMenu;
 
 /**
- * Builds a new context menu using informations from a config file
+ * Build a new context menu.
+ * @param {Config} config - Config-instance to use informations from.
+ * @returns {Menu} A Menu-Instance to be used as context menu.
  */
 function buildContextMenu(config) {
   return Menu.buildFromTemplate([
@@ -40,6 +42,10 @@ app.on('ready', () => {
   startSchedule(config);
 });
 
+/**
+ * Run the play function at a hourly schedule
+ * @param {Config} config - The config to retrieve the current hourly from.
+ */
 function startSchedule(config) {
   cron.schedule('0 * * * *', function() {
     play(config.current, currentHour());
@@ -48,7 +54,9 @@ function startSchedule(config) {
 }
 
 /**
- * (Currently) Relays a given hourly and hour to a script to play them using aplay
+ * Play a hourly.
+ * @param {string} hourly - The hourly to play a sound from.
+ * @param {string} hour - The hour for which the hourly sound is chosen.
  */
 function play(hourly, hour) {
   player.play(path.join(dirs.hourlies, hourly, hour + '.wav'), function (err) {

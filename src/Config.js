@@ -81,6 +81,7 @@ class Config {
 
   /**
    * Generates a object from this Config-instance.
+   * @returns {Object} This instance as a JS object.
    */
   toJSON() {
     return {
@@ -92,7 +93,7 @@ class Config {
   }
   
   /**
-   * Returns stringified this.toJSON() as string representation.
+   * @returns {string} String representation of this intance. 
    */
   toString() {
     return JSON.stringify(this.toJSON());
@@ -102,6 +103,7 @@ class Config {
 /**
  * Parses a config file into a JS object.
  * @param {string} confpath - Path to the config file to be parsed.
+ * @returns {Object} The .json file as JS object.
  */
 function readConfig(confpath) {
   let res;
