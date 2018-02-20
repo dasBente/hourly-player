@@ -3,6 +3,11 @@ const {homedir} = require('os');
 
 let root = path.join(homedir(), '.hourlyplayer');
 
+let resources = path.join(
+  path.resolve(__dirname).split(path.sep).reverse().slice(1).reverse().join(path.sep),
+  'resources'
+);
+
 /**
  * @module directories
  */
@@ -14,7 +19,7 @@ module.exports = {
   config: path.join(root, 'config.json'),
 
   /** Path to the tray icons image file */
-  icon:path.join(root, 'icon.png'),
+  icon: path.join(resources, 'icon.png'),
 
   /** Path to the hourlies directory */
   hourlies: path.join(root, 'hourlies'),

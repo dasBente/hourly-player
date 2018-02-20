@@ -4,10 +4,13 @@
   "description": "Electron-based hourly player",
   "main": "index.js",
   "directories": {
-    "example": "example"
+    "example": "example",
+    "src": "src"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "package": "electron-packager ./ HourlyPlayer --out ./target/HourlyPlayer --version 0.0.1 --overwrite --icon=./resources/icon.png.icns --platform=linux --arch=x64"
   },
   "repository": {
     "type": "git",
@@ -23,5 +26,9 @@
     "moment": "^2.20.1",
     "node-cron": "^1.2.1",
     "play-sound": "^1.1.2"
+  },
+  "devDependencies": {
+    "electron-packager": "^11.0.1",
+    "electron-prebuilt": "^1.4.13"
   }
 }
