@@ -13,7 +13,7 @@ class Config {
     
     this.source = source;
     this.list = conf.list? conf.list : '';
-    this.update(config);
+    this.update(conf);
     this.toggleMute(conf.mute);
   }
 
