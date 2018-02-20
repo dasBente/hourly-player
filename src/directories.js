@@ -1,13 +1,12 @@
 const path = require('path');
+const {homedir} = require('os');
 
-let root = path.resolve(__dirname).split(path.sep).reverse().slice(1).reverse().join(path.sep);
-let resources = path.join(root, 'resources');
+let root = path.join(homedir(), '.hourlyplayer');
 
 module.exports = {
   root: root,
-  resources: resources,
-  config: path.join(resources, 'config.json'),
-  icon:path.join(resources, 'icon.png'),
-  hourlies: path.join(resources, 'hourlies'),
-  lists: path.join(resources, 'lists'),
+  config: path.join(root, 'config.json'),
+  icon:path.join(root, 'icon.png'),
+  hourlies: path.join(root, 'hourlies'),
+  lists: path.join(root, 'lists'),
 };
