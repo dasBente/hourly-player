@@ -22,14 +22,19 @@ function buildContextMenu(config) {
   return Menu.buildFromTemplate([
     {
       label: config.current, 
-      click: () => {play(config.current, currentHour())},
+      click: () => {play(config.current, currentHour());},
+    },
+    {
+      label: 'Mute',
+      type: 'checkbox',
+      checked: config.mute === '1',
+      click: () => {config.toggleMute();}
     }
   ]);
 }
 
 app.on('ready', () => {
   let config = new Config(dirs.config);
-  config.save();
 
   tray = new Tray(dirs.icon);
   tray.setContextMenu(buildContextMenu(config));
@@ -48,10 +53,15 @@ app.on('ready', () => {
  */
 function startSchedule(config) {
   cron.schedule('0 * * * *', function() {
-    play(config.current, currentHour());
+    if (config.mute === '0') {
+      play(config.current, currentHour());
+    }
+
     config.update();
   });
 }
+
+let playing = false; // Used to ensure that only one sound clip plays at a time
 
 /**
  * Play a hourly.
@@ -59,7 +69,12 @@ function startSchedule(config) {
  * @param {string} hour - The hour for which the hourly sound is chosen.
  */
 function play(hourly, hour) {
-  player.play(path.join(dirs.hourlies, hourly, hour + '.wav'), function (err) {
-    if (err) throw err;
-  });
+  if (!playing) {
+    playing = true;
+    
+    player.play(path.join(dirs.hourlies, hourly, hour + '.wav'), function (err) {
+      playing = false;
+      if (err) throw err;
+    });
+  }
 }

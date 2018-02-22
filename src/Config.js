@@ -61,6 +61,7 @@ class Config {
     } else {
       this.mute = value;
     }
+    this.save();
   }
 
   /**
@@ -73,6 +74,7 @@ class Config {
 
     if (!config && (this.today !== t || !this.current) || !config.today || !config.current) {
       this.setHourly();
+      this.save();
     } else {
       this.current = config.current;
       this.today = config.today;
