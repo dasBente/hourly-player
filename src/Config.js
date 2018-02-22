@@ -13,13 +13,27 @@ class Config {
    * @param {string} source - A path to the source config file
    */
   constructor(source) {
-    const conf = readConfig(source) || {};
-    let t = today();
+    this.read(source);
+  }
+
+  /**
+   * Read in the sourced config file and set instance state accordingly
+   * @param {string} [source] - Path to the source config file. If left out this.source is used.
+   */
+  read(source) {
+    this.source = source || this.source;
     
-    this.source = source;
-    this.list = conf.list? conf.list : '';
-    this.toggleMute(conf.mute);
-    this.update(conf);
+    let res;
+
+    try {
+      res = fs.readFileSync(this.source, 'utf8');
+      res = JSON.parse(res);
+    } catch (err) {
+      console.log(`Caught ${err}`);
+      res = undefined;
+    }
+
+    this.update(res);
   }
 
   /**
@@ -34,18 +48,15 @@ class Config {
 
   /**
    * Set the hourly to a new one by random or choice.
-   * @param {object} [opts] - A object of possible options for the hourly generation. If unset, the
-   *     hourly will just be determined at random from all hourlies saved in list this.list.
+   * @param {object} [options] - A object of possible options for the hourly generation. If unset, 
+   *     the hourly will just be determined at random from all hourlies saved in list this list.
    * @param {string} [opts.hourly] - Set this.hourly to this value.
    * @param {stirng} [opts.list] - Set the list from which the hourly should be chosen.
    */
-  setHourly(opts) {
-    if (hourly) {
-      this.current = hourly;
-    } else {
-      let list = hourliesFromList(this.list);
-      this.current = list[Math.floor(Math.random() * list.length)];
-    }
+  setHourly(options) {
+    let opts = options || {};
+    let list = hourliesFromList(opts.list || this.list);
+    this.current = opts.current || list[Math.floor(Math.random() * list.length)];
 
     this.today = today();
   }
@@ -72,13 +83,19 @@ class Config {
   update(config) {
     let t = today();
 
+    if (config) {
+      this.list = config.list || '';
+      this.toggleMute(config.mute);
+    }
+
     if (!config && (this.today !== t || !this.current) || !config.today || !config.current) {
       this.setHourly();
-      this.save();
     } else {
       this.current = config.current;
       this.today = config.today;
     }
+
+    this.save();
   }
 
   /**
@@ -100,25 +117,6 @@ class Config {
   toString() {
     return JSON.stringify(this.toJSON());
   }
-}
-
-/**
- * Parses a config file into a JS object.
- * @param {string} confpath - Path to the config file to be parsed.
- * @returns {Object} The .json file as JS object.
- */
-function readConfig(confpath) {
-  let res;
-
-  try {
-    res = fs.readFileSync(confpath, 'utf8');
-    res = JSON.parse(res);
-  } catch (err) {
-    console.log(`Caught ${err}`);
-    res = undefined;
-  }
-  
-  return res;
 }
 
 module.exports.Config = Config;
