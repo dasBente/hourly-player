@@ -1,5 +1,5 @@
 /* Imports */
-const {app, Menu, Tray} = require('electron');
+const {app, Menu, Tray, BrowserWindow} = require('electron');
 const path = require('path');
 const exec = require('child_process').exec;
 const cron = require('node-cron');
@@ -7,11 +7,25 @@ const player = require('play-sound')(opts = {});
 
 const dirs = require('./src/directories.js');
 const Config = require('./src/Config.js').Config;
+const {getLists} = require('./src/player.js');
 
 const {currentHour} = require('./src/player.js');
 
 /* UI Code */
 let tray, contextMenu;
+
+/**
+ * Build a menu to pick a new list to be used.
+ * @param {Config} config - The config which provides the current list.
+ */
+function buildListChooser(config) {
+  let lists = getLists();
+  let window = new BrowserWindow({
+    height: 200, width: 400
+  });
+
+  window.loadURL(`file://${dirs.listChooserHTML}`);
+}
 
 /**
  * Build a new context menu.
@@ -23,6 +37,10 @@ function buildContextMenu(config) {
     {
       label: config.current, 
       click: () => {play(config.current, currentHour());},
+    },
+    {
+      label: config.list || '<Choose list>',
+      click: () => {buildListChooser(config);},
     },
     {
       label: 'Mute',
