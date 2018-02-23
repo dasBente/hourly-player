@@ -88,7 +88,8 @@ class Config {
       this.toggleMute(config.mute);
     }
 
-    if (!config && (this.today !== t || !this.current) || !config.today || !config.current) {
+    if (!config && (this.today !== t || !this.current) || config.today !== t || !config.today 
+        || !config.current) {
       this.setHourly();
     } else {
       this.current = config.current;
